@@ -9,7 +9,7 @@ app.listen(3333)
 
 const customers = []
 
-app.get('/statement/:cpf', (req, res) => {
+function verifyIfAccountAlreadyExists(req, res, next) {
   const { cpf } = req.params
 
   const customer = customers.find((customer) => customer.cpf === cpf)
@@ -17,6 +17,14 @@ app.get('/statement/:cpf', (req, res) => {
   if (!customer) {
     return res.status(400).json({ error: 'Cliente não encontrado!' })
   }
+
+  req.customer = customer
+
+  return next()
+}
+
+app.get('/statement/:cpf', verifyIfAccountAlreadyExists, (req, res) => {
+  const { customer } = req
 
   return res.json(customer.statement)
 })
