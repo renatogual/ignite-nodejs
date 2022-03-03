@@ -10,7 +10,7 @@ app.listen(3333)
 const customers = []
 
 function verifyIfAccountAlreadyExists(req, res, next) {
-  const { cpf } = req.params
+  const { cpf } = req.headers
 
   const customer = customers.find((customer) => customer.cpf === cpf)
 
@@ -23,7 +23,7 @@ function verifyIfAccountAlreadyExists(req, res, next) {
   return next()
 }
 
-app.get('/statement/:cpf', verifyIfAccountAlreadyExists, (req, res) => {
+app.get('/statement', verifyIfAccountAlreadyExists, (req, res) => {
   const { customer } = req
 
   return res.json(customer.statement)
@@ -46,4 +46,21 @@ app.post('/account', (req, res) => {
   })
 
   return res.status(201).send('Conta criada com sucesso')
+})
+
+app.post('/deposit', verifyIfAccountAlreadyExists, (req, res) => {
+  const { description, amount } = req.body
+
+  const { customer } = req
+
+  const statementOperation = {
+    description,
+    amount,
+    created_at: new Date(),
+    type: 'credit',
+  }
+
+  customer.statement.push(statementOperation)
+
+  return res.status(201).send()
 })
