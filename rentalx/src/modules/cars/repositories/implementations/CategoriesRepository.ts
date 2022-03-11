@@ -1,11 +1,25 @@
-import { Category } from '../model/Category'
+/* eslint-disable no-use-before-define */
+import { Category } from '../../model/Category'
 import {
   ICategoriesRepository,
   ICreateCategoryDTO,
-} from './ICategoriesRepository'
+} from '../ICategoriesRepository'
 
 export class CategoriesRepository implements ICategoriesRepository {
   private categories: Category[]
+
+  private static INSTANCE: CategoriesRepository
+
+  private constructor() {
+    this.categories = []
+  }
+
+  public static getInstance(): CategoriesRepository {
+    if (!CategoriesRepository.INSTANCE) {
+      CategoriesRepository.INSTANCE = new CategoriesRepository()
+    }
+    return CategoriesRepository.INSTANCE
+  }
 
   create({ name, description }: ICreateCategoryDTO): void {
     const category = new Category()
@@ -28,9 +42,5 @@ export class CategoriesRepository implements ICategoriesRepository {
       (categories) => categories.name === name
     )
     return category
-  }
-
-  constructor() {
-    this.categories = []
   }
 }
