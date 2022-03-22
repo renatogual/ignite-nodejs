@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Category } from '../../model/Category'
+import { Category } from '../../entities/Category'
 import { ICategoriesRepository } from '../../repositories/ICategoriesRepository'
 
 export class ListCategoriesUseCase {
